@@ -14,3 +14,10 @@ brew install eza
 
 # https://github.com/junegunn/fzf?tab=readme-ov-file#installation
 brew install fzf
+
+# https://github.com/sharkdp/bat
+brew install bat
+
+# https://github.com/ajeetdsouza/zoxide
+brew install zoxide
+

@@ -1,6 +1,23 @@
-# https://xebia.com/blog/profiling-zsh-shell-scripts/
-# zmodload zsh/zprof
-
+# Some nice aliases to have
+alias diff='colordiff'
+alias sup='sudo su -'
+alias ls='ls --color'
+# alias ll='ls -lA'
+alias ll='eza --long --all --no-permissions --no-filesize --no-user --no-time --git'
+alias llt2='ll --tree --level 2'
+alias llt3='ll --tree --level 3'source <(kubectl completion bash | sed 's/kubectl/k/g')
+alias g='git'
+# dh print history of visited directories. Use cd -number to go to selected folder.
+alias dh='dirs -v'
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias cat="bat --paging never --theme DarkNeon --style plain"
+alias fzfp='fzf --preview "bat --theme=OneHalfDark --color=always {}"'
+source $ZSH/oh-my-zsh.sh
+plugins=(
+  kubectl
+)
 
 # If not running interactively, don't do anything.
 case $- in
@@ -39,6 +56,10 @@ setopt promptsubst # Allow command substitution in prompts.
 setopt autocd # automatic directory change without `cd` because we are lazy.
 setopt autopushd pushdminus pushdsilent pushdtohome pushdignoredups # See: http://zsh.sourceforge.net/Intro/intro_6.html
 
+
+
+# Command-line completion
+autoload -Uz compinit && compinit
 # Command-line completion
 # Create global directory
 [ -d ~/.zsh_completions ] || mkdir ~/.zsh_completions
@@ -119,29 +140,10 @@ parse_k8s_context() {
 autoload -U colors && colors
 
 # Set shell prompt.
-if [ $commands[starship] ]; then
-    eval "$(starship init zsh)"
-else
     # Prompt with Git branch if available.
     local git_branch='%{$fg_bold[blue]%}$(parse_git_branch)'
     local k8s_context='%{$fg_bold[magenta]%}$(parse_k8s_context)'
-    # PS1="%{$fg_bold[green]%}%m %{$fg_bold[yellow]%}%(3~|.../%2~|%~)${git_branch} %{$fg_bold[yellow]%}% \$ %{$reset_color%}%{$fg[white]%}"
     PS1="%{$fg_bold[green]%}%m %{$fg_bold[yellow]%}%(3~|.../%2~|%~)${git_branch}${k8s_context} %{$fg_bold[yellow]%}% \$ %{$reset_color%}%{$fg[white]%}"
-fi
-
-# Some nice aliases to have
-alias diff='colordiff'
-alias git-cloc='git ls-files | xargs cloc'
-alias sup='sudo su -'
-alias ls='ls --color'
-alias ll='ls -lA'
-alias k='kubectl'
-alias g='git'
-# dh print history of visited directories. Use cd -number to go to selected folder.
-alias dh='dirs -v'
-alias ..="cd .."
-alias ...="cd ../.."
-alias ....="cd ../../.."
 
 # Source another Aliases from external file (if exists).
 if [ -f ~/.aliases ]; then
@@ -168,23 +170,12 @@ gpip3(){
 # Check if 'kubectl' is a command in $PATH
 if [ $commands[kubectl] ]; then
     [ -s ~/.zsh_completions/_kubectl ] || kubectl completion zsh > ~/.zsh_completions/_kubectl
-  # Placeholder 'kubectl' shell function:
-  # Will only be executed on the first call to 'kubectl'
-  # kubectl() {
-    # Remove this function, subsequent calls will execute 'kubectl' directly
-  #  unfunction "$0"
-    # Load auto-completion
-  #  source <(kubectl completion zsh)
-    # Execute 'kubectl' binary
-  #  $0 "$@"
-  #}
 fi
 
 # k8s-kx
  kx() {
     eval $(k8s-kx)
 }
-
 
 kexec() {
     kubectl exec -it "$1" -- sh
